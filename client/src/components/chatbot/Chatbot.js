@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import axios from "axios/index";
 import Cookies from 'universal-cookie';
 import { v4 as uuid } from 'uuid';
@@ -22,7 +23,10 @@ class Chatbot extends Component {
         this.show = this.show.bind(this);
         this.state = {
             messages: [],
-            showBot: true
+            showBot: true,
+            isShop: false,
+            shopWelcomeSent: false,
+            welcomeSent: false,
         };
 
         if (cookies.get('userID') === undefined) {
@@ -73,8 +77,34 @@ class Chatbot extends Component {
         }
     };
 
-    componentDidMount() {
+    resolveAfterXSeconds(x) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve(x);
+            }, x * 1000);
+        });
+    }
+
+    componentWillMount() {
+         this.props.history.listen(() => {
+            if (this.props.history.location.pathname === '/shop' && !this.state.shopWelcomeSent) {
+                this.df_event_query('WELCOME_SHOP');
+                this.setState({ isShop: true, shopWelcomeSent: true, showBot: true, welcomeSent: true});
+            }
+        });
+    }
+
+    async componentDidMount() {
         this.df_event_query('Welcome');
+        let x = await this.resolveAfterXSeconds(1);
+
+        if (window.location.pathname === '/shop' && !this.state.shopWelcomeSent) {
+
+            this.df_event_query('WELCOME_SHOP');
+            this.setState({ isShop: true, shopWelcomeSent: true, welcomeSent: true});
+        } else {
+            this.setState({ shopWelcomeSent: false, welcomeSent: true});
+        }
 
     }
 
@@ -94,11 +124,16 @@ class Chatbot extends Component {
         }
     }
 
-    _handleQuickReplyPayload(text) {
-        if (text === 'maybe') {
-            this.props.df_event_query(text);
-        } else {
-            this.props.df_text_query(text);
+    _handleQuickReplyPayload(payload, text) {
+        switch (payload) {
+            case 'recommend_yes':
+                this.df_event_query('SHOW_RECOMMENDATIONS');
+                break;
+            case 'training_maybe':
+                this.df_event_query(text);
+                break;
+            default:
+                this.df_text_query(text);
         }
     }
 
@@ -213,4 +248,4 @@ class Chatbot extends Component {
 }
 
 
-export default Chatbot;
+export default withRouter(Chatbot);
