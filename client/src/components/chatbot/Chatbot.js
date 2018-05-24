@@ -96,7 +96,7 @@ class Chatbot extends Component {
 
     async componentDidMount() {
         this.df_event_query('Welcome');
-        let x = await this.resolveAfterXSeconds(1);
+        await this.resolveAfterXSeconds(1);
 
         if (window.location.pathname === '/shop' && !this.state.shopWelcomeSent) {
 
@@ -201,7 +201,7 @@ class Chatbot extends Component {
                 <div style={{ minHeight: 400, maxHeight: 500, width:400, position: 'absolute', bottom: 0, right: 0, border: '1px solid lightgray'}}>
                     <nav>
                         <div className="nav-wrapper">
-                            <a href="#" className="brand-logo">ChatBot</a>
+                            <a href="/" className="brand-logo">ChatBot</a>
                             <ul id="nav-mobile" className="right hide-on-med-and-down">
                                 <li><a onClick={this.hide}>Close</a></li>
                             </ul>
@@ -227,7 +227,7 @@ class Chatbot extends Component {
             return <div style={{ minHeight: 40, width:400, position: 'absolute', bottom: 0, right: 0, border: '1px solid lightgray'}}>
                 <nav>
                     <div className="nav-wrapper">
-                        <a href="#" className="brand-logo">ChatBot</a>
+                        <a href="/" className="brand-logo">ChatBot</a>
                         <ul id="nav-mobile" className="right hide-on-med-and-down">
                             <li><a onClick={this.show}>Show</a></li>
                         </ul>
