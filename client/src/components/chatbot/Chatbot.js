@@ -198,7 +198,7 @@ class Chatbot extends Component {
     render() {
         if (this.state.showBot) {
             return (
-                <div style={{ minHeight: 400, maxHeight: 500, width:400, position: 'absolute', bottom: 0, right: 0, border: '1px solid lightgray'}}>
+                <div style={{ minHeight: 400, maxHeight: 470, width:400, position: 'absolute', bottom: 0, right: 0, border: '1px solid lightgray'}}>
                     <nav>
                         <div className="nav-wrapper">
                             <a href="/" className="brand-logo">ChatBot</a>
@@ -215,9 +215,9 @@ class Chatbot extends Component {
                         </div>
 
                     </div>
-                    <div className="row">
+                    <div className="row" style={{ marginBottom: 0 }}>
                         <div className="input-field col s12">
-                            <input ref={(input) => { this.talkInput = input; }} placeholder="me:"  onKeyPress={this._handleInputKeyPress} id="user_says" type="text" />
+                            <input style={{ marginBottom: 0 }} ref={(input) => { this.talkInput = input; }} placeholder="me:"  onKeyPress={this._handleInputKeyPress} id="user_says" type="text" />
                         </div>
                     </div>
 
