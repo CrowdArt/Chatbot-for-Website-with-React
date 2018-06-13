@@ -35,46 +35,78 @@ class Chatbot extends Component {
     }
 
 
-    async df_text_query (queryText) {
-        let msg;
+    async df_text_query (text) {
         let says = {
             speaks: 'user',
             msg: {
                 text : {
-                    text: queryText
+                    text: text
                 }
             }
         }
         this.setState({ messages: [...this.state.messages, says]});
-        const res = await axios.post('/api/df_text_query',  {text: queryText, userID: cookies.get('userID')});
 
-        if (res.data.fulfillmentMessages ) {
-            for (let i = 0; i < res.data.fulfillmentMessages.length; i++) {
-                msg = res.data.fulfillmentMessages[i];
-                says = {
-                    speaks: 'bot',
-                    msg: msg
+        try {
+            const res = await axios.post('/api/df_text_query',  {text, userID: cookies.get('userID')});
+
+            if (res.data.fulfillmentMessages ) {
+                for (let msg of res.data.fulfillmentMessages) {
+                    says = {
+                        speaks: 'bot',
+                        msg: msg
+                    }
+                    this.setState({ messages: [...this.state.messages, says]});
                 }
-                this.setState({ messages: [...this.state.messages, says]});
             }
+        } catch (e) {
+            says = {
+                speaks: 'bot',
+                msg: {
+                    text : {
+                        text: "I'm having troubles. I need to terminate. will be back later"
+                    }
+                }
+            }
+            this.setState({ messages: [...this.state.messages, says]});
+            let that = this;
+            setTimeout(function(){
+                that.setState({ showBot: false})
+            }, 2000);
         }
+
     };
 
 
-    async df_event_query(eventName) {
 
-        const res = await axios.post('/api/df_event_query',  {event: eventName, userID: cookies.get('userID')});
-        let msg, says = {};
-        if (res.data.fulfillmentMessages ) {
-            for (let i=0; i<res.data.fulfillmentMessages.length; i++) {
-                msg = res.data.fulfillmentMessages[i];
-                says = {
-                    speaks: 'bot',
-                    msg: msg
+    async df_event_query(event) {
+        try {
+            const res = await axios.post('/api/df_event_query',  {event, userID: cookies.get('userID')});
+            let  says = {};
+            if (res.data.fulfillmentMessages ) {
+                for (let msg of res.data.fulfillmentMessages) {
+                    says = {
+                        speaks: 'bot',
+                        msg: msg
+                    }
+                    this.setState({ messages: [...this.state.messages, says]});
                 }
-                this.setState({ messages: [...this.state.messages, says]});
             }
+        } catch (e) {
+            let says = {
+                speaks: 'bot',
+                msg: {
+                    text : {
+                        text: "I'm having troubles. I need to terminate. will be back later"
+                    }
+                }
+            }
+            this.setState({ messages: [...this.state.messages, says]});
+            let that = this;
+            setTimeout(function(){
+                that.setState({ showBot: false})
+            }, 2000);
         }
+
     };
 
     resolveAfterXSeconds(x) {
