@@ -26,7 +26,7 @@ class Chatbot extends Component {
             showBot: true,
             isShop: false,
             shopWelcomeSent: false,
-            welcomeSent: false,
+            welcomeSent: false
         };
 
         if (cookies.get('userID') === undefined) {
@@ -193,16 +193,13 @@ class Chatbot extends Component {
     }
 
     renderCards(cards) {
-        return cards.map((card, i) => <Card key={i} payload={card.structValue}/>);
+        return cards.map((card, i) => <Card key={i} payload={card}/>);
     }
 
     renderOneMessage(message, i) {
-
         if (message.msg && message.msg.text && message.msg.text.text) {
             return <Message key={i} speaks={message.speaks} text={message.msg.text.text}/>;
-        } else if (message.msg && message.msg.payload
-            && message.msg.payload.fields && message.msg.payload.fields.cards) { //message.msg.payload.fields.cards.listValue.values
-
+        } else if (message.msg && message.msg.payload && message.msg.payload.cards) { //message.msg.payload.fields.cards.listValue.values
             return <div key={i}>
                 <div className="card-panel grey lighten-5 z-depth-1">
                     <div style={{overflow: 'hidden'}}>
@@ -210,8 +207,8 @@ class Chatbot extends Component {
                             <a className="btn-floating btn-large waves-effect waves-light red">{message.speaks}</a>
                         </div>
                         <div style={{ overflow: 'auto', overflowY: 'scroll'}}>
-                            <div style={{ height: 300, width:message.msg.payload.fields.cards.listValue.values.length * 270}}>
-                                {this.renderCards(message.msg.payload.fields.cards.listValue.values)}
+                            <div style={{ height: 300, width:message.msg.payload.cards.length * 270}}>
+                                {this.renderCards(message.msg.payload.cards)}
                             </div>
                         </div>
                     </div>
@@ -229,6 +226,7 @@ class Chatbot extends Component {
                 eplyClick={this._handleQuickReplyPayload}
                 speaks={message.speaks}
                 payload={message.msg.payload.fields.quick_replies.listValue.values}/>;
+
         }
     }
 
